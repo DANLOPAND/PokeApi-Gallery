@@ -1,25 +1,36 @@
-class Gif {
-  List<ModelGifs> items = [];
+import 'package:poke_api/Provider/Poke_Provider.dart';
 
-  Gif();
+PokeProvider pokeProvider = PokeProvider();
 
-  Gif.fromJsonList(jsonList) {
-    if (jsonList == null) return;
-    for (var item in jsonList["data"]) {
-      final gif = ModelGifs.fromJsonMap(item);
+class Poke {
+  List<ModelPokes> items = [];
+
+  Poke();
+
+  Poke.fromJsonList(jsonList) {
+    
+    for (var item in jsonList) {
+      final gif = ModelPokes.fromJsonMap(item);
+      print(gif != null);
       items.add(gif);
     }
   }
 }
 
-class ModelGifs {
-  late String name;
-  late String url;
+class ModelPokes {
+  String name;
+  List types;
+  String img;
 
-  ModelGifs(this.name, this.url);
+  ModelPokes({required this.name, required this.types, required this.img});
 
-  ModelGifs.fromJsonMap(Map<String, dynamic> json) {
-    name = json["title"];
-    url = json["images"]["downsized"]["url"];
+  factory ModelPokes.fromJsonMap(Map<String, dynamic> json) {
+    return ModelPokes(
+      name: json["name"],
+      types: json["types"],
+      img: json["sprites"]["other"]["official-artwork"]["front_default"],
+    
+    );
   }
 }
+
