@@ -1,44 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:poke_api/Widgets/SwiperPoke.dart';
-import '../Widgets/PageViewPoke.dart';
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../characters/characters.dart';
+import '../characters/cubit/characters_cubit.dart';
+import '../character_main/cubit/character_main_cubit.dart';
+import 'package:repository/repository.dart';
+import 'package:repository/src/models/character.dart';
 
 
-class _MyHomePageState extends State<MyHomePage> {
-  late PageController _scrollController;
-  int offset = 0;
 
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = PageController();
-    _scrollController.addListener(() {});
-  }
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: Column(
-        children: const [
-          Expanded(
-            flex: 1,
-            child: PageViewPoke(),
-          ),
-          Expanded(
-              flex: 2,
-              child: SwipperPoke())
-        ],
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CharactersCubit(context.read<Repository>())..getCharacters(),
+        ),
+        BlocProvider(
+          create: (context) => CharacterMainCubit(Character.empty()),
+        ),
+      ],
+      child: const CharactersPage(),
     );
   }
 }
